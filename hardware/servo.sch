@@ -1,6 +1,6 @@
 EESchema Schematic File Version 4
 LIBS:servo-cache
-EELAYER 26 0
+EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
@@ -277,34 +277,34 @@ S-MISO
 $Comp
 L tinkerforge:LED D3
 U 1 1 5823347E
-P 2500 3300
-F 0 "D3" H 2500 3400 50  0000 C CNN
-F 1 "blue" H 2500 3200 50  0000 C CNN
-F 2 "kicad-libraries:D0603E" H 2500 3300 50  0001 C CNN
-F 3 "" H 2500 3300 50  0000 C CNN
-	1    2500 3300
+P 2500 3400
+F 0 "D3" H 2500 3500 50  0000 C CNN
+F 1 "blue" H 2500 3300 50  0000 C CNN
+F 2 "kicad-libraries:D0603E" H 2500 3400 50  0001 C CNN
+F 3 "" H 2500 3400 50  0000 C CNN
+	1    2500 3400
 	1    0    0    -1  
 $EndComp
 $Comp
 L tinkerforge:CONN_01X02 P2
 U 1 1 58233528
-P 3450 3550
-F 0 "P2" H 3450 3700 50  0000 C CNN
-F 1 "BOOT" V 3550 3550 50  0000 C CNN
-F 2 "kicad-libraries:SolderJumper" H 3450 3450 50  0001 C CNN
-F 3 "" H 3450 3450 50  0000 C CNN
-	1    3450 3550
+P 2400 3050
+F 0 "P2" H 2400 3200 50  0000 C CNN
+F 1 "BOOT" V 2500 3050 50  0000 C CNN
+F 2 "kicad-libraries:SolderJumper" H 2400 2950 50  0001 C CNN
+F 3 "" H 2400 2950 50  0000 C CNN
+	1    2400 3050
 	-1   0    0    1   
 $EndComp
 $Comp
 L tinkerforge:VCC #PWR08
 U 1 1 5824794E
-P 2250 3250
-F 0 "#PWR08" H 2250 3350 30  0001 C CNN
-F 1 "VCC" H 2250 3350 30  0000 C CNN
-F 2 "" H 2250 3250 60  0001 C CNN
-F 3 "" H 2250 3250 60  0001 C CNN
-	1    2250 3250
+P 2250 3350
+F 0 "#PWR08" H 2250 3450 30  0001 C CNN
+F 1 "VCC" H 2250 3450 30  0000 C CNN
+F 2 "" H 2250 3350 60  0001 C CNN
+F 3 "" H 2250 3350 60  0001 C CNN
+	1    2250 3350
 	1    0    0    -1  
 $EndComp
 Text Notes 2100 4800 0    39   ~ 0
@@ -378,12 +378,12 @@ $EndComp
 $Comp
 L tinkerforge:GND #PWR012
 U 1 1 5828358D
-P 3750 3700
-F 0 "#PWR012" H 3750 3700 30  0001 C CNN
-F 1 "GND" H 3750 3630 30  0001 C CNN
-F 2 "" H 3750 3700 60  0001 C CNN
-F 3 "" H 3750 3700 60  0001 C CNN
-	1    3750 3700
+P 2700 3200
+F 0 "#PWR012" H 2700 3200 30  0001 C CNN
+F 1 "GND" H 2700 3130 30  0001 C CNN
+F 2 "" H 2700 3200 60  0001 C CNN
+F 3 "" H 2700 3200 60  0001 C CNN
+	1    2700 3200
 	1    0    0    -1  
 $EndComp
 Text Notes 3150 7550 0    39   ~ 0
@@ -391,12 +391,12 @@ TSX-3225 16.0000MF18X-AC0\nno C - 1,00017\n3pF - 1,00008\n4.7pF - 1,00005\n9pF -
 $Comp
 L tinkerforge:R R1
 U 1 1 5898C45C
-P 3050 3300
-F 0 "R1" V 3130 3300 50  0000 C CNN
-F 1 "1k" V 3050 3300 50  0000 C CNN
-F 2 "kicad-libraries:R0603F" H 3050 3300 60  0001 C CNN
-F 3 "" H 3050 3300 60  0000 C CNN
-	1    3050 3300
+P 3050 3400
+F 0 "R1" V 3130 3400 50  0000 C CNN
+F 1 "1k" V 3050 3400 50  0000 C CNN
+F 2 "kicad-libraries:R0603F" H 3050 3400 60  0001 C CNN
+F 3 "" H 3050 3400 60  0000 C CNN
+	1    3050 3400
 	0    1    1    0   
 $EndComp
 $Comp
@@ -504,13 +504,13 @@ Wire Wire Line
 Wire Wire Line
 	1050 4900 1400 4900
 Wire Wire Line
-	3650 3600 3750 3600
+	2600 3100 2700 3100
 Wire Wire Line
-	3950 3500 3650 3500
+	2900 3000 2600 3000
 Wire Wire Line
-	2800 3300 2700 3300
+	2800 3400 2700 3400
 Wire Wire Line
-	2300 3300 2250 3300
+	2300 3400 2250 3400
 Wire Wire Line
 	1800 1450 2050 1450
 Wire Wire Line
@@ -547,13 +547,13 @@ Connection ~ 1200 1750
 Wire Wire Line
 	1200 2200 1200 2250
 Wire Wire Line
-	2250 3300 2250 3250
+	2250 3400 2250 3350
 Wire Wire Line
-	3300 3300 3950 3300
+	3300 3400 3950 3400
 NoConn ~ 3950 2800
 NoConn ~ 1400 4800
 Wire Wire Line
-	3750 3600 3750 3700
+	2700 3100 2700 3200
 $Comp
 L tinkerforge:CONN_01X01 P3
 U 1 1 5A65BF9D
@@ -898,57 +898,57 @@ Wire Wire Line
 Connection ~ 8600 1100
 Wire Wire Line
 	8600 1100 8600 1200
-Text GLabel 1250 2500 0    31   Input ~ 0
-CUR-SERVO-0
-Text GLabel 1250 2600 0    31   Input ~ 0
-CUR-SERVO-1
-Text GLabel 1250 2700 0    31   Input ~ 0
-CUR-SERVO-2
-Text GLabel 1250 2800 0    31   Input ~ 0
-CUR-SERVO-3
-Text GLabel 1250 2900 0    31   Input ~ 0
-CUR-SERVO-4
 Text GLabel 1250 3000 0    31   Input ~ 0
-CUR-SERVO-5
+CUR-SERVO-0
 Text GLabel 1250 3100 0    31   Input ~ 0
-CUR-SERVO-6
+CUR-SERVO-1
 Text GLabel 1250 3200 0    31   Input ~ 0
-CUR-SERVO-7
+CUR-SERVO-2
 Text GLabel 1250 3300 0    31   Input ~ 0
-CUR-SERVO-8
+CUR-SERVO-3
 Text GLabel 1250 3400 0    31   Input ~ 0
+CUR-SERVO-4
+Text GLabel 1250 2500 0    31   Input ~ 0
+CUR-SERVO-5
+Text GLabel 1250 2600 0    31   Input ~ 0
+CUR-SERVO-6
+Text GLabel 1250 2700 0    31   Input ~ 0
+CUR-SERVO-7
+Text GLabel 1250 2800 0    31   Input ~ 0
+CUR-SERVO-8
+Text GLabel 1250 2900 0    31   Input ~ 0
 CUR-SERVO-9
 Wire Wire Line
-	1250 2500 1400 2500
+	1250 3000 1400 3000
 Wire Wire Line
-	1400 2600 1250 2600
+	1400 3100 1250 3100
 Wire Wire Line
-	1250 2700 1400 2700
-Wire Wire Line
-	1250 2800 1400 2800
-Wire Wire Line
-	1250 2900 1400 2900
-Wire Wire Line
-	1400 3000 1250 3000
-Wire Wire Line
-	1250 3100 1400 3100
-Wire Wire Line
-	1400 3200 1250 3200
+	1250 3200 1400 3200
 Wire Wire Line
 	1250 3300 1400 3300
 Wire Wire Line
-	1400 3400 1250 3400
+	1250 3400 1400 3400
+Wire Wire Line
+	1400 2500 1250 2500
+Wire Wire Line
+	1250 2600 1400 2600
+Wire Wire Line
+	1400 2700 1250 2700
+Wire Wire Line
+	1250 2800 1400 2800
+Wire Wire Line
+	1400 2900 1250 2900
 Wire Wire Line
 	1250 3500 1400 3500
-Text GLabel 3950 5300 0    31   Input ~ 0
+Text GLabel 3950 5900 0    31   Input ~ 0
 PWM-SERVO-0
-Text GLabel 3950 5400 0    31   Input ~ 0
+Text GLabel 3950 5300 0    31   Input ~ 0
 PWM-SERVO-1
 Text GLabel 3950 5500 0    31   Input ~ 0
 PWM-SERVO-2
 Text GLabel 3950 5600 0    31   Input ~ 0
 PWM-SERVO-3
-Text GLabel 3950 5900 0    31   Input ~ 0
+Text GLabel 3950 5400 0    31   Input ~ 0
 PWM-SERVO-4
 Wire Wire Line
 	3950 5300 4100 5300
@@ -1359,7 +1359,6 @@ Wire Wire Line
 NoConn ~ 1400 3600
 Text GLabel 1250 3500 0    31   Input ~ 0
 V-EXT
-NoConn ~ 3950 3400
 NoConn ~ 1400 4300
 $Comp
 L tinkerforge:Con_Servo_5x U9
@@ -1471,4 +1470,9 @@ F 3 "" H 9650 3000 50  0001 C CNN
 	1    9700 2800
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	2900 3000 2900 3300
+Wire Wire Line
+	2900 3300 3950 3300
+NoConn ~ 3950 3500
 $EndSCHEMATC
