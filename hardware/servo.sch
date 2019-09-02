@@ -898,25 +898,25 @@ Wire Wire Line
 Connection ~ 8600 1100
 Wire Wire Line
 	8600 1100 8600 1200
-Text GLabel 1250 3000 0    31   Input ~ 0
+Text GLabel 1250 3400 0    31   Input ~ 0
 CUR-SERVO-0
-Text GLabel 1250 3100 0    31   Input ~ 0
+Text GLabel 1250 3300 0    31   Input ~ 0
 CUR-SERVO-1
 Text GLabel 1250 3200 0    31   Input ~ 0
 CUR-SERVO-2
-Text GLabel 1250 3300 0    31   Input ~ 0
+Text GLabel 1250 3100 0    31   Input ~ 0
 CUR-SERVO-3
-Text GLabel 1250 3400 0    31   Input ~ 0
+Text GLabel 1250 3000 0    31   Input ~ 0
 CUR-SERVO-4
-Text GLabel 1250 2500 0    31   Input ~ 0
+Text GLabel 1250 2900 0    31   Input ~ 0
 CUR-SERVO-5
-Text GLabel 1250 2600 0    31   Input ~ 0
+Text GLabel 1250 2800 0    31   Input ~ 0
 CUR-SERVO-6
 Text GLabel 1250 2700 0    31   Input ~ 0
 CUR-SERVO-7
-Text GLabel 1250 2800 0    31   Input ~ 0
+Text GLabel 1250 2600 0    31   Input ~ 0
 CUR-SERVO-8
-Text GLabel 1250 2900 0    31   Input ~ 0
+Text GLabel 1250 2500 0    31   Input ~ 0
 CUR-SERVO-9
 Wire Wire Line
 	1250 3000 1400 3000
