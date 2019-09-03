@@ -852,45 +852,45 @@ Connection ~ 9000 1500
 Wire Wire Line
 	9000 1500 8900 1500
 Text GLabel 6200 2600 0    50   Input ~ 0
-PWM-SERVO-0
+PWM-SERVO-4
 Text GLabel 6200 2700 0    50   Input ~ 0
-PWM-SERVO-1
+PWM-SERVO-3
 Text GLabel 6200 2800 0    50   Input ~ 0
 PWM-SERVO-2
 Text GLabel 6200 2900 0    50   Input ~ 0
-PWM-SERVO-3
+PWM-SERVO-1
 Text GLabel 6200 3000 0    50   Input ~ 0
-PWM-SERVO-4
+PWM-SERVO-0
 Text GLabel 6200 4800 0    50   Input ~ 0
-PWM-SERVO-5
+PWM-SERVO-9
 Text GLabel 6200 4900 0    50   Input ~ 0
-PWM-SERVO-6
+PWM-SERVO-8
 Text GLabel 6200 5000 0    50   Input ~ 0
 PWM-SERVO-7
 Text GLabel 6200 5100 0    50   Input ~ 0
-PWM-SERVO-8
+PWM-SERVO-6
 Text GLabel 6200 5200 0    50   Input ~ 0
-PWM-SERVO-9
+PWM-SERVO-5
 Text GLabel 9300 1900 0    31   Output ~ 0
-CUR-SERVO-0
+CUR-SERVO-4
 Text GLabel 9300 2300 0    31   Output ~ 0
-CUR-SERVO-1
+CUR-SERVO-3
 Text GLabel 9300 2650 0    31   Output ~ 0
 CUR-SERVO-2
 Text GLabel 9300 3000 0    31   Output ~ 0
-CUR-SERVO-3
+CUR-SERVO-1
 Text GLabel 9300 3350 0    31   Output ~ 0
-CUR-SERVO-4
+CUR-SERVO-0
 Text GLabel 9300 4100 0    31   Output ~ 0
-CUR-SERVO-5
+CUR-SERVO-9
 Text GLabel 9300 4500 0    31   Output ~ 0
-CUR-SERVO-6
+CUR-SERVO-8
 Text GLabel 9300 4850 0    31   Output ~ 0
 CUR-SERVO-7
 Text GLabel 9300 5200 0    31   Output ~ 0
-CUR-SERVO-8
+CUR-SERVO-6
 Text GLabel 9300 5550 0    31   Output ~ 0
-CUR-SERVO-9
+CUR-SERVO-5
 Text GLabel 8500 1100 0    31   Output ~ 0
 V-EXT
 Wire Wire Line
@@ -899,25 +899,25 @@ Connection ~ 8600 1100
 Wire Wire Line
 	8600 1100 8600 1200
 Text GLabel 1250 3400 0    31   Input ~ 0
-CUR-SERVO-0
+CUR-SERVO-4
 Text GLabel 1250 3300 0    31   Input ~ 0
-CUR-SERVO-1
+CUR-SERVO-3
 Text GLabel 1250 3200 0    31   Input ~ 0
 CUR-SERVO-2
 Text GLabel 1250 3100 0    31   Input ~ 0
-CUR-SERVO-3
+CUR-SERVO-1
 Text GLabel 1250 3000 0    31   Input ~ 0
-CUR-SERVO-4
+CUR-SERVO-0
 Text GLabel 1250 2900 0    31   Input ~ 0
-CUR-SERVO-5
+CUR-SERVO-9
 Text GLabel 1250 2800 0    31   Input ~ 0
-CUR-SERVO-6
+CUR-SERVO-8
 Text GLabel 1250 2700 0    31   Input ~ 0
 CUR-SERVO-7
 Text GLabel 1250 2600 0    31   Input ~ 0
-CUR-SERVO-8
+CUR-SERVO-6
 Text GLabel 1250 2500 0    31   Input ~ 0
-CUR-SERVO-9
+CUR-SERVO-5
 Wire Wire Line
 	1250 3000 1400 3000
 Wire Wire Line
@@ -941,15 +941,15 @@ Wire Wire Line
 Wire Wire Line
 	1250 3500 1400 3500
 Text GLabel 3950 5900 0    31   Input ~ 0
-PWM-SERVO-0
+PWM-SERVO-4
 Text GLabel 3950 5300 0    31   Input ~ 0
-PWM-SERVO-1
+PWM-SERVO-3
 Text GLabel 3950 5500 0    31   Input ~ 0
 PWM-SERVO-2
 Text GLabel 3950 5600 0    31   Input ~ 0
-PWM-SERVO-3
+PWM-SERVO-1
 Text GLabel 3950 5400 0    31   Input ~ 0
-PWM-SERVO-4
+PWM-SERVO-0
 Wire Wire Line
 	3950 5300 4100 5300
 Wire Wire Line
@@ -961,9 +961,9 @@ Wire Wire Line
 Wire Wire Line
 	3950 5900 4100 5900
 Text GLabel 3950 6000 0    31   Input ~ 0
-PWM-SERVO-5
+PWM-SERVO-9
 Text GLabel 3950 6100 0    31   Input ~ 0
-PWM-SERVO-6
+PWM-SERVO-8
 Text GLabel 3950 6200 0    31   Input ~ 0
 PWM-SERVO-7
 Wire Wire Line
@@ -975,11 +975,11 @@ Wire Wire Line
 Wire Wire Line
 	4100 6000 3950 6000
 Text GLabel 3950 6800 0    31   Input ~ 0
-PWM-SERVO-8
+PWM-SERVO-6
 Wire Wire Line
 	3950 6500 4100 6500
 Text GLabel 3950 6500 0    31   Input ~ 0
-PWM-SERVO-9
+PWM-SERVO-5
 Wire Wire Line
 	3950 6800 4100 6800
 NoConn ~ 4100 5700
