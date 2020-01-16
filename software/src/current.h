@@ -1,7 +1,7 @@
 /* servo-v2-bricklet
  * Copyright (C) 2019 Olaf Lüke <olaf@tinkerforge.com>
  *
- * main.c: Initialization for Servo Bricklet 2.0
+ * current.h: Driver for Servo current measurements
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,30 +19,47 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <stdio.h>
+#ifndef CURRENT_H
+#define CURRENT_H
+
+#include "xmc_vadc.h"
+#include "xmc_gpio.h"
+
+#include <stdint.h>
 #include <stdbool.h>
 
-#include "configs/config.h"
+#define INPUT_VOLTAGE_INDEX 10
 
-#include "bricklib2/bootloader/bootloader.h"
-#include "bricklib2/hal/system_timer/system_timer.h"
-#include "bricklib2/logging/logging.h"
-#include "communication.h"
-#include "pwm.h"
-#include "current.h"
+#define CURRENT_NUM 11
 
-int main(void) {
-	logging_init();
-	logd("Start Servo Bricklet 2.0\n\r");
+typedef struct {
+    // Pin
+    XMC_GPIO_PORT_t *port;
+    uint8_t pin;
 
-	communication_init();
-	pwm_init();
-	current_init();
+	// ADC config
+	uint8_t result_reg;
+	uint8_t channel_num;
+	int8_t channel_alias;
+	uint8_t group_index;
+	XMC_VADC_GROUP_t *group;
 
-	while(true) {
-		bootloader_tick();
-		communication_tick();
-		pwm_tick();
-		current_tick();
-	}
-}
+	// ADC result
+	uint32_t result_sum;
+	uint32_t result_count;
+	uint32_t result; // mA
+
+	// Channel config
+	uint8_t averaging_duration;
+	int16_t offset;
+
+	// Channel config changed by API
+	bool new_averaging_duration;
+} Current;
+
+extern Current current[CURRENT_NUM];
+
+void current_init(void);
+void current_tick(void);
+
+#endif

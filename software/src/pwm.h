@@ -32,26 +32,50 @@
 #define PWM_NUM 10
 
 typedef struct {
-    // CCU4/8
-    bool is_ccu4; // true = ccu4, false = ccu8
+	// CCU4/8
+	bool is_ccu4; // true = ccu4, false = ccu8
 
-    // Pin
-    XMC_GPIO_PORT_t *port;
-    uint8_t pin;
-    XMC_GPIO_MODE_t mode;
+	// Pin
+	XMC_GPIO_PORT_t *port;
+	uint8_t pin;
+	XMC_GPIO_MODE_t mode;
 
-    // CCU4 config
-    XMC_CCU4_MODULE_t *ccu4_module;
-    XMC_CCU4_SLICE_t *ccu4_slice;
-    uint8_t ccu4_slice_number;
-    uint32_t ccu4_transfer_mask; // XMC_CCU4_SHADOW_TRANSFER_t (shadow transfer slice and shadow transfer prescaler slice)
+	// CCU4 config
+	XMC_CCU4_MODULE_t *ccu4_module;
+	XMC_CCU4_SLICE_t *ccu4_slice;
+	uint8_t ccu4_slice_number;
+	uint32_t ccu4_transfer_mask; // XMC_CCU4_SHADOW_TRANSFER_t (shadow transfer slice and shadow transfer prescaler slice)
 
-    // CCU8 config
-    XMC_CCU8_MODULE_t *ccu8_module;
-    XMC_CCU8_SLICE_t *ccu8_slice;
-    XMC_CCU8_SLICE_COMPARE_CHANNEL_t ccu8_channel;
-    uint8_t ccu8_slice_number;
-    uint32_t ccu8_transfer_mask; // XMC_CCU8_SHADOW_TRANSFER_t (shadow transfer slice and shadow transfer prescaler slice)
+	// CCU8 config
+	XMC_CCU8_MODULE_t *ccu8_module;
+	XMC_CCU8_SLICE_t *ccu8_slice;
+	XMC_CCU8_SLICE_COMPARE_CHANNEL_t ccu8_channel;
+	uint8_t ccu8_slice_number;
+	uint32_t ccu8_transfer_mask; // XMC_CCU8_SHADOW_TRANSFER_t (shadow transfer slice and shadow transfer prescaler slice)
+
+	uint32_t prescaler;
+
+	// Servo config (for set/get of API)
+	bool enabled;
+	int16_t position;
+	int16_t current_position;
+	uint16_t velocity;
+	uint16_t current_velocity;
+	uint16_t acceleration;
+	uint16_t deceleration;
+	uint32_t pulse_width_min;
+	uint32_t pulse_width_max;
+	int16_t degree_min;
+	int16_t degree_max;
+	uint32_t period;
+
+	// New value set by API
+	bool new_enabled;
+	bool new_position;
+	bool new_motion;
+	bool new_pulse_width;
+	bool new_degree;
+	bool new_period;
 } PWM;
 
 extern PWM pwm[PWM_NUM];

@@ -21,7 +21,15 @@
 
 #include "pwm.h"
 
+#include "bricklib2/hal/system_timer/system_timer.h"
+#include "bricklib2/utility/util_definitions.h"
+
 #include "xmc_scu.h"
+
+// us to compare/period value:
+// CP = US*1000*1000*1000*96/(1000*1000*1000*PRESCALER)
+//    = US*96/PRESCALER
+#define PWM_US_TO_PERIOD(US, PRESCALER) (((US)*96)/(1 << (PRESCALER)))
 
 PWM pwm[PWM_NUM] = {
 	{ // Channel 0
@@ -130,12 +138,7 @@ PWM pwm[PWM_NUM] = {
 
 
 // Period value is the amount of clock cycles per period
-void pwm_init_channel(PWM *conf) {
-	XMC_GPIO_CONFIG_t gpio_out_config	= {
-		.mode         = conf->mode,
-		.output_level = XMC_GPIO_OUTPUT_LEVEL_HIGH,
-	};
-
+void pwm_init_channel(const PWM *conf) {
 	if(conf->is_ccu4) {
 		const XMC_CCU4_SLICE_COMPARE_CONFIG_t compare_config = {
 			.timer_mode          = XMC_CCU4_SLICE_TIMER_COUNT_MODE_EA,
@@ -145,10 +148,10 @@ void pwm_init_channel(PWM *conf) {
 			.dither_duty_cycle   = 0,
 			.prescaler_mode      = XMC_CCU4_SLICE_PRESCALER_MODE_NORMAL,
 			.mcm_enable          = 0,
-			.prescaler_initval   = 0,
+			.prescaler_initval   = conf->prescaler,
 			.float_limit         = 0,
 			.dither_limit        = 0,
-			.passive_level       = XMC_CCU4_SLICE_OUTPUT_PASSIVE_LEVEL_LOW,
+			.passive_level       = XMC_CCU4_SLICE_OUTPUT_PASSIVE_LEVEL_HIGH,
 			.timer_concatenation = 0
 		};
 
@@ -156,13 +159,7 @@ void pwm_init_channel(PWM *conf) {
 		XMC_CCU4_StartPrescaler(conf->ccu4_module);
 		XMC_CCU4_SLICE_CompareInit(conf->ccu4_slice, &compare_config);
 
-		// Set the period and compare register values
-		XMC_CCU4_SLICE_SetTimerPeriodMatch(conf->ccu4_slice, UINT16_MAX);
-		XMC_CCU4_SLICE_SetTimerCompareMatch(conf->ccu4_slice, 0);
-
 		XMC_CCU4_EnableShadowTransfer(conf->ccu4_module, conf->ccu4_transfer_mask);
-
-		XMC_GPIO_Init(conf->port, conf->pin, &gpio_out_config);
 
 		XMC_CCU4_EnableClock(conf->ccu4_module, conf->ccu4_slice_number);
 		XMC_CCU4_SLICE_StartTimer(conf->ccu4_slice);
@@ -174,13 +171,13 @@ void pwm_init_channel(PWM *conf) {
 			.dither_timer_period = 0,
 			.dither_duty_cycle   = 0,
 			.prescaler_mode      = XMC_CCU8_SLICE_PRESCALER_MODE_NORMAL,
-			.prescaler_initval   = 0,
+			.prescaler_initval   = conf->prescaler,
 			.float_limit         = 0,
 			.dither_limit        = 0,
-			.passive_level_out0  = XMC_CCU8_SLICE_OUTPUT_PASSIVE_LEVEL_LOW,
-			.passive_level_out1  = XMC_CCU8_SLICE_OUTPUT_PASSIVE_LEVEL_LOW,
-			.passive_level_out2  = XMC_CCU8_SLICE_OUTPUT_PASSIVE_LEVEL_LOW,
-			.passive_level_out3  = XMC_CCU8_SLICE_OUTPUT_PASSIVE_LEVEL_LOW,
+			.passive_level_out0  = XMC_CCU8_SLICE_OUTPUT_PASSIVE_LEVEL_HIGH,
+			.passive_level_out1  = XMC_CCU8_SLICE_OUTPUT_PASSIVE_LEVEL_HIGH,
+			.passive_level_out2  = XMC_CCU8_SLICE_OUTPUT_PASSIVE_LEVEL_HIGH,
+			.passive_level_out3  = XMC_CCU8_SLICE_OUTPUT_PASSIVE_LEVEL_HIGH,
 			.timer_concatenation = 0
 		};
 
@@ -188,36 +185,119 @@ void pwm_init_channel(PWM *conf) {
 		XMC_CCU8_StartPrescaler(conf->ccu8_module);
 		XMC_CCU8_SLICE_CompareInit(conf->ccu8_slice, &compare_config);
 
-		// Set the period and compare register values
-		XMC_CCU8_SLICE_SetTimerPeriodMatch(conf->ccu8_slice, UINT16_MAX);
-		XMC_CCU8_SLICE_SetTimerCompareMatch(conf->ccu8_slice, conf->ccu8_channel, 0);
-
 		XMC_CCU8_EnableShadowTransfer(conf->ccu8_module, conf->ccu8_transfer_mask);
-
-		XMC_GPIO_Init(conf->port, conf->pin, &gpio_out_config);
 
 		XMC_CCU8_EnableClock(conf->ccu8_module, conf->ccu8_slice_number);
 		XMC_CCU8_SLICE_StartTimer(conf->ccu8_slice);
 	}
 }
 
-void pwm_set_duty_cycle(const PWM *conf, const uint16_t compare_value) {
+void pwm_set_period_match(const PWM *conf, const uint32_t period_value, const uint32_t prescaler) {
+	if(conf->is_ccu4) {
+		conf->ccu4_slice->PSC = prescaler;
+		XMC_CCU4_SLICE_SetTimerPeriodMatch(conf->ccu4_slice, period_value-1);
+	} else {
+		conf->ccu8_slice->PSC = prescaler;
+		XMC_CCU8_SLICE_SetTimerPeriodMatch(conf->ccu8_slice, period_value-1);
+	}
+}
+
+void pwm_set_compare_match(const PWM *conf, const uint16_t compare_value) {
 	if(conf->is_ccu4) {
 		XMC_CCU4_SLICE_SetTimerCompareMatch(conf->ccu4_slice, compare_value);
-		XMC_CCU4_EnableShadowTransfer(conf->ccu4_module, conf->ccu4_transfer_mask);
 	} else {
 		XMC_CCU8_SLICE_SetTimerCompareMatch(conf->ccu8_slice, conf->ccu8_channel, compare_value);
+	}
+}
+
+void pwm_enable_shadow_transfer(const PWM *conf) {
+	if(conf->is_ccu4) {
+		XMC_CCU4_EnableShadowTransfer(conf->ccu4_module, conf->ccu4_transfer_mask);
+	} else {
 		XMC_CCU8_EnableShadowTransfer(conf->ccu8_module, conf->ccu8_transfer_mask);
 	}
 }
 
 void pwm_init(void) {
 	for(uint8_t i = 0; i < PWM_NUM; i++) {
+		pwm[i].enabled          = true;
+		pwm[i].position         = 0;     // °/100
+		pwm[i].current_position = 0;     // °/100
+		pwm[i].velocity         = 65535; // °/100s
+		pwm[i].current_velocity = 0;     // °/100s
+		pwm[i].acceleration     = 65535; // °/100s^2
+		pwm[i].deceleration     = 65535; // °/100s^2
+		pwm[i].pulse_width_min  = 1000;  // us
+		pwm[i].pulse_width_max  = 2000;  // us
+		pwm[i].degree_min       = -9000; // °/100
+		pwm[i].degree_max       = 9000;  // °/100
+		pwm[i].period           = 19500; // us
+
+		pwm[i].prescaler        = XMC_CCU4_SLICE_PRESCALER_32;
+
+		pwm[i].new_enabled      = true;
+		pwm[i].new_position     = true;
+		pwm[i].new_motion       = true;
+		pwm[i].new_pulse_width  = true;
+		pwm[i].new_degree       = true;
+		pwm[i].new_period       = true;
+
 		pwm_init_channel(&pwm[i]);
-		pwm_set_duty_cycle(&pwm[i], UINT16_MAX/(i+1));
 	}
 }
 
 void pwm_tick(void) {
+	for(uint8_t i = 0; i < PWM_NUM; i++) {
+		if(pwm[i].new_period || pwm[i].new_degree || pwm[i].new_pulse_width) {
+			pwm[i].new_period      = false;
+			pwm[i].new_degree      = false;
+			pwm[i].new_pulse_width = false;
 
+			pwm[i].prescaler = XMC_CCU4_SLICE_PRESCALER_64;
+			for(uint8_t prescaler = 0; prescaler < 16; prescaler++) {
+				if(PWM_US_TO_PERIOD(pwm[i].period, prescaler) <= UINT16_MAX) {
+					pwm[i].prescaler = prescaler;
+					break;
+				}
+			}
+			pwm_set_period_match(&pwm[i], PWM_US_TO_PERIOD(pwm[i].period, pwm[i].prescaler), pwm[i].prescaler);
+
+			// When we change the period, degree or pulse width
+			// we also have to update the position
+			pwm[i].new_position = true;
+		}
+
+		if(pwm[i].new_position) {
+			pwm[i].new_position = false;
+
+			pwm[i].current_position = pwm[i].position;
+			uint32_t value = SCALE((int64_t)pwm[i].position,
+								   (int64_t)pwm[i].degree_min,
+								   (int64_t)pwm[i].degree_max,
+								   (int64_t)PWM_US_TO_PERIOD(pwm[i].pulse_width_min, pwm[i].prescaler),
+								   (int64_t)PWM_US_TO_PERIOD(pwm[i].pulse_width_max, pwm[i].prescaler));
+			pwm_set_compare_match(&pwm[i], value);
+			pwm_enable_shadow_transfer(&pwm[i]);
+		}
+
+		if(pwm[i].new_enabled) {
+			pwm[i].new_enabled = false;
+			if(pwm[i].enabled) {
+				XMC_GPIO_CONFIG_t gpio_out_config	= {
+					.mode         = pwm[i].mode,
+					.output_level = XMC_GPIO_OUTPUT_LEVEL_LOW,
+				};
+				
+				XMC_GPIO_Init(pwm[i].port, pwm[i].pin, &gpio_out_config);
+			} else {
+				XMC_GPIO_CONFIG_t gpio_in_config	= {
+					.mode             = XMC_GPIO_MODE_INPUT_TRISTATE,
+					.input_hysteresis = XMC_GPIO_INPUT_HYSTERESIS_STANDARD
+				};
+				
+				XMC_GPIO_Init(pwm[i].port, pwm[i].pin, &gpio_in_config);
+			}
+
+		}
+	}
 }
