@@ -69,6 +69,8 @@ typedef struct {
 	int16_t degree_max;
 	uint32_t period;
 
+	uint32_t period_update_last;
+
 	// New value set by API
 	bool new_enabled;
 	bool new_position;
@@ -76,6 +78,7 @@ typedef struct {
 	bool new_pulse_width;
 	bool new_degree;
 	bool new_period;
+
 } PWM;
 
 extern PWM pwm[PWM_NUM];

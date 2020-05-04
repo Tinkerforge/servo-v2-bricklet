@@ -246,27 +246,43 @@ void pwm_init(void) {
 	}
 }
 
+void pwm_motion_planning(PWM *pwm) {
+	// TODO!!!!
+}
+
 void pwm_tick(void) {
 	for(uint8_t i = 0; i < PWM_NUM; i++) {
+		pwm_motion_planning(&pwm[i]);
+
+		// Update period, degree, and pulse width
 		if(pwm[i].new_period || pwm[i].new_degree || pwm[i].new_pulse_width) {
-			pwm[i].new_period      = false;
-			pwm[i].new_degree      = false;
-			pwm[i].new_pulse_width = false;
+			// Enforce 2ms delay between period start if all periods are set at the same time
+			if(i == 0 || system_timer_is_time_elapsed_ms(pwm[i-1].period_update_last, 2)) {
+				pwm[i].period_update_last = system_timer_get_ms();
+				pwm[i].new_period      = false;
+				pwm[i].new_degree      = false;
+				pwm[i].new_pulse_width = false;
 
-			pwm[i].prescaler = XMC_CCU4_SLICE_PRESCALER_64;
-			for(uint8_t prescaler = 0; prescaler < 16; prescaler++) {
-				if(PWM_US_TO_PERIOD(pwm[i].period, prescaler) <= UINT16_MAX) {
-					pwm[i].prescaler = prescaler;
-					break;
+				// Find prescaler with best resolution
+				pwm[i].prescaler = XMC_CCU4_SLICE_PRESCALER_32;
+				for(uint8_t prescaler = 0; prescaler < 16; prescaler++) {
+					if(PWM_US_TO_PERIOD(pwm[i].period, prescaler) <= UINT16_MAX) {
+						pwm[i].prescaler = prescaler;
+						break;
+					}
 				}
-			}
-			pwm_set_period_match(&pwm[i], PWM_US_TO_PERIOD(pwm[i].period, pwm[i].prescaler), pwm[i].prescaler);
+				pwm_set_period_match(&pwm[i], PWM_US_TO_PERIOD(pwm[i].period, pwm[i].prescaler), pwm[i].prescaler);
 
-			// When we change the period, degree or pulse width
-			// we also have to update the position
-			pwm[i].new_position = true;
+				// When we change the period, degree or pulse width
+				// we also have to update the position
+				pwm[i].new_position = true;
+			 } else {
+				 return;
+			 }
+			 
 		}
 
+		// Update position
 		if(pwm[i].new_position) {
 			pwm[i].new_position = false;
 
@@ -280,6 +296,7 @@ void pwm_tick(void) {
 			pwm_enable_shadow_transfer(&pwm[i]);
 		}
 
+		// Update enabled
 		if(pwm[i].new_enabled) {
 			pwm[i].new_enabled = false;
 			if(pwm[i].enabled) {
@@ -297,7 +314,6 @@ void pwm_tick(void) {
 				
 				XMC_GPIO_Init(pwm[i].port, pwm[i].pin, &gpio_in_config);
 			}
-
 		}
 	}
 }
