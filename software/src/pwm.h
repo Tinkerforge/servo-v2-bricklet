@@ -59,10 +59,10 @@ typedef struct {
 	bool enabled;
 	int16_t position;
 	int16_t current_position;
-	uint16_t velocity;
-	uint16_t current_velocity;
-	uint16_t acceleration;
-	uint16_t deceleration;
+	uint32_t velocity;
+	uint32_t current_velocity;
+	uint32_t acceleration;
+	uint32_t deceleration;
 	uint32_t pulse_width_min;
 	uint32_t pulse_width_max;
 	int16_t degree_min;
@@ -78,6 +78,11 @@ typedef struct {
 	bool new_pulse_width;
 	bool new_degree;
 	bool new_period;
+
+	// Motion Planning
+	uint32_t last_time;
+	float position_calc;
+	float velocity_calc;
 
 } PWM;
 

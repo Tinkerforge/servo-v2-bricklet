@@ -220,13 +220,13 @@ void pwm_enable_shadow_transfer(const PWM *conf) {
 
 void pwm_init(void) {
 	for(uint8_t i = 0; i < PWM_NUM; i++) {
-		pwm[i].enabled          = true;
+		pwm[i].enabled          = false;
 		pwm[i].position         = 0;     // °/100
 		pwm[i].current_position = 0;     // °/100
-		pwm[i].velocity         = 65535; // °/100s
+		pwm[i].velocity         = 100000; // °/100s
 		pwm[i].current_velocity = 0;     // °/100s
-		pwm[i].acceleration     = 65535; // °/100s^2
-		pwm[i].deceleration     = 65535; // °/100s^2
+		pwm[i].acceleration     = 50000; // °/100s^2
+		pwm[i].deceleration     = 50000; // °/100s^2
 		pwm[i].pulse_width_min  = 1000;  // us
 		pwm[i].pulse_width_max  = 2000;  // us
 		pwm[i].degree_min       = -9000; // °/100
@@ -242,12 +242,72 @@ void pwm_init(void) {
 		pwm[i].new_degree       = true;
 		pwm[i].new_period       = true;
 
+		pwm[i].last_time        = 0;
+		pwm[i].position_calc    = 0.0;
+
 		pwm_init_channel(&pwm[i]);
 	}
 }
 
 void pwm_motion_planning(PWM *pwm) {
-	// TODO!!!!
+	// We do the motion planning 250 times per second (every 4ms) 
+	if(!system_timer_is_time_elapsed_ms(pwm->last_time, 4)) {
+		return;
+	}
+	pwm->last_time = system_timer_get_ms();
+
+	if(pwm->pin == 1) {
+		XMC_GPIO_ToggleOutput(P4_4);
+	}
+
+	if(pwm->current_position != pwm->position) {
+		// If either acceleration or deceleration is 0, we go full speed without any acc/deceleration
+		if((pwm->acceleration == 0) || (pwm->deceleration == 0)) {
+			pwm->velocity_calc    = pwm->velocity;
+			pwm->current_velocity = (uint16_t)pwm->velocity_calc;
+		} else {
+			float seconds_for_deceleration  = pwm->current_velocity/((float)pwm->deceleration);
+			float distance_for_deceleration = seconds_for_deceleration*pwm->current_velocity/2;
+
+			// Decelerate
+			if(distance_for_deceleration >= ABS(pwm->current_position - pwm->position)) {
+				if(pwm->current_velocity != 0) {
+					pwm->velocity_calc    = MAX(0, pwm->velocity_calc - pwm->deceleration/250.0);
+					pwm->current_velocity = (uint16_t)pwm->velocity_calc;
+				} else {
+					pwm->position_calc    = pwm->position;
+					pwm->current_velocity = 0;
+					pwm->velocity_calc    = 0.0;
+					return;
+				}
+			// Accelerate
+			} else if(pwm->current_velocity != pwm->velocity) {
+				if(pwm->velocity_calc < pwm->velocity) {
+					pwm->velocity_calc = MIN(pwm->velocity, pwm->velocity_calc + pwm->acceleration/250.0);
+				} else {
+					pwm->velocity_calc = MAX(pwm->velocity, pwm->velocity_calc - pwm->acceleration/250.0);
+				}
+				pwm->current_velocity = (uint16_t)pwm->velocity_calc;
+			}
+		}
+
+		// If velocity is set to 0, we go directly to the position
+		if(pwm->velocity == 0) {
+			pwm->position_calc = pwm->position;
+			pwm->current_velocity = 0;
+			pwm->velocity_calc    = 0.0;
+		} else {
+			if(pwm->position_calc < pwm->position) {
+				pwm->position_calc = MIN(pwm->position, pwm->position_calc + pwm->velocity_calc/250.0);
+			} else {
+				pwm->position_calc = MAX(pwm->position, pwm->position_calc - pwm->velocity_calc/250.0);
+			}
+		}
+		pwm->new_position = true;
+	} else {
+		pwm->current_velocity = 0;
+		pwm->velocity_calc    = 0.0;
+	}
 }
 
 void pwm_tick(void) {
@@ -279,15 +339,14 @@ void pwm_tick(void) {
 			 } else {
 				 return;
 			 }
-			 
 		}
 
 		// Update position
 		if(pwm[i].new_position) {
 			pwm[i].new_position = false;
 
-			pwm[i].current_position = pwm[i].position;
-			uint32_t value = SCALE((int64_t)pwm[i].position,
+			pwm[i].current_position = (int16_t)pwm[i].position_calc;
+			uint32_t value = SCALE((int64_t)pwm[i].current_position,
 								   (int64_t)pwm[i].degree_min,
 								   (int64_t)pwm[i].degree_max,
 								   (int64_t)PWM_US_TO_PERIOD(pwm[i].pulse_width_min, pwm[i].prescaler),
@@ -304,14 +363,14 @@ void pwm_tick(void) {
 					.mode         = pwm[i].mode,
 					.output_level = XMC_GPIO_OUTPUT_LEVEL_LOW,
 				};
-				
+
 				XMC_GPIO_Init(pwm[i].port, pwm[i].pin, &gpio_out_config);
 			} else {
 				XMC_GPIO_CONFIG_t gpio_in_config	= {
 					.mode             = XMC_GPIO_MODE_INPUT_TRISTATE,
 					.input_hysteresis = XMC_GPIO_INPUT_HYSTERESIS_STANDARD
 				};
-				
+
 				XMC_GPIO_Init(pwm[i].port, pwm[i].pin, &gpio_in_config);
 			}
 		}
