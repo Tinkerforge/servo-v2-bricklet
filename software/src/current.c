@@ -278,12 +278,15 @@ void current_init_adc(void) {
 }
 
 void current_init(void) {
+	for(uint8_t i = 0; i < CURRENT_NUM; i++) {
+		current[i].averaging_duration = 255;
+	}
 	current_init_adc();
 }
 
 
 void current_tick(void) {
-	static uint32_t last_time_result = 0;
+	static uint32_t last_time_result[CURRENT_NUM] = {0};
 
 	for(uint8_t i = 0; i < CURRENT_NUM; i++) {
 		uint32_t result = XMC_VADC_GROUP_GetDetailedResult(current[i].group, current[i].result_reg);
@@ -293,8 +296,8 @@ void current_tick(void) {
 		}
 	}
 
-	if(system_timer_is_time_elapsed_ms(last_time_result, 50)) {
-		for(uint8_t i = 0; i < CURRENT_NUM; i++) {
+	for(uint8_t i = 0; i < CURRENT_NUM; i++) {
+		if(system_timer_is_time_elapsed_ms(last_time_result[i], current[i].averaging_duration)) {
 			if(i == 10) {
 				// Resistor divider 1k:10k
 				// mV = adc_value * 3300*11 / (4095*4) = 605 / 273
@@ -307,7 +310,7 @@ void current_tick(void) {
 			current[i].result_sum = 0;
 			current[i].result_count = 0;
 
-			last_time_result = system_timer_get_ms();
+			last_time_result[i] = system_timer_get_ms();
 		}
 	}
 }

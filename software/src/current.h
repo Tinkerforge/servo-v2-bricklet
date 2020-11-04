@@ -45,7 +45,7 @@ typedef struct {
 	XMC_VADC_GROUP_t *group;
 
 	// ADC result
-	uint32_t result_sum;
+	uint64_t result_sum;
 	uint32_t result_count;
 	uint32_t result; // mA
 
