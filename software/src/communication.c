@@ -267,7 +267,7 @@ BootloaderHandleMessageResponse get_degree(const GetDegree *data, GetDegree_Resp
 }
 
 BootloaderHandleMessageResponse set_period(const SetPeriod *data) {
-	if(data->period > 1000000) {
+	if((data->period == 0) || (data->period > 1000000)) {
 		return HANDLE_MESSAGE_RESPONSE_INVALID_PARAMETER;
 	}
 
@@ -308,6 +308,10 @@ BootloaderHandleMessageResponse get_servo_current(const GetServoCurrent *data, G
 }
 
 BootloaderHandleMessageResponse set_servo_current_configuration(const SetServoCurrentConfiguration *data) {
+	if(data->averaging_duration == 0) {
+		return HANDLE_MESSAGE_RESPONSE_INVALID_PARAMETER;
+	}
+
 	ServoChannels *sc = get_servo_channels(data->servo_channel);
 	if(sc->length == 0) {
 		return HANDLE_MESSAGE_RESPONSE_INVALID_PARAMETER;
@@ -334,6 +338,10 @@ BootloaderHandleMessageResponse get_servo_current_configuration(const GetServoCu
 }
 
 BootloaderHandleMessageResponse set_input_voltage_configuration(const SetInputVoltageConfiguration *data) {
+	if(data->averaging_duration == 0) {
+		return HANDLE_MESSAGE_RESPONSE_INVALID_PARAMETER;
+	}
+
 	current[INPUT_VOLTAGE_INDEX].averaging_duration     = data->averaging_duration;
 	current[INPUT_VOLTAGE_INDEX].new_averaging_duration = true;
 
