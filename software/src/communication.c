@@ -142,7 +142,6 @@ BootloaderHandleMessageResponse set_position(const SetPosition *data) {
 	for(uint16_t i = 0; i < sc->length; i++) {
 		const uint8_t channel     = sc->servo[i];
 		pwm[channel].position     = data->position;
-		pwm[channel].new_position = true;
 	}
 
 	return HANDLE_MESSAGE_RESPONSE_EMPTY;
