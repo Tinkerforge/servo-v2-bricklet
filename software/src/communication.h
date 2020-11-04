@@ -147,9 +147,9 @@ typedef struct {
 typedef struct {
 	TFPMessageHeader header;
 	uint16_t servo_channel;
-	uint16_t velocity;
-	uint16_t acceleration;
-	uint16_t deceleration;
+	uint32_t velocity;
+	uint32_t acceleration;
+	uint32_t deceleration;
 } __attribute__((__packed__)) SetMotionConfiguration;
 
 typedef struct {
@@ -159,9 +159,9 @@ typedef struct {
 
 typedef struct {
 	TFPMessageHeader header;
-	uint16_t velocity;
-	uint16_t acceleration;
-	uint16_t deceleration;
+	uint32_t velocity;
+	uint32_t acceleration;
+	uint32_t deceleration;
 } __attribute__((__packed__)) GetMotionConfiguration_Response;
 
 typedef struct {
