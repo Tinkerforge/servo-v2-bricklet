@@ -84,6 +84,9 @@ typedef struct {
 	float position_calc;
 	float velocity_calc;
 
+	// Callbacks
+	bool position_reached_enabled;
+	bool position_reached;
 } PWM;
 
 extern PWM pwm[PWM_NUM];

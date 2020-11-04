@@ -1,5 +1,5 @@
 /* servo-v2-bricklet
- * Copyright (C) 2019 Olaf Lüke <olaf@tinkerforge.com>
+ * Copyright (C) 2020 Olaf Lüke <olaf@tinkerforge.com>
  *
  * communication.h: TFP protocol message handling
  *
@@ -77,7 +77,10 @@ void communication_init(void);
 #define FID_GET_OVERALL_CURRENT 21
 #define FID_GET_INPUT_VOLTAGE 22
 #define FID_CALIBRATE_SERVO_CURRENT 23
+#define FID_SET_POSITION_REACHED_CALLBACK_CONFIGURATION 24
+#define FID_GET_POSITION_REACHED_CALLBACK_CONFIGURATION 25
 
+#define FID_CALLBACK_POSITION_REACHED 26
 
 typedef struct {
 	TFPMessageHeader header;
@@ -278,6 +281,28 @@ typedef struct {
 	TFPMessageHeader header;
 } __attribute__((__packed__)) CalibrateServoCurrent;
 
+typedef struct {
+	TFPMessageHeader header;
+	uint16_t servo_channel;
+	bool enabled;
+} __attribute__((__packed__)) SetPositionReachedCallbackConfiguration;
+
+typedef struct {
+	TFPMessageHeader header;
+	uint16_t servo_channel;
+} __attribute__((__packed__)) GetPositionReachedCallbackConfiguration;
+
+typedef struct {
+	TFPMessageHeader header;
+	bool enabled;
+} __attribute__((__packed__)) GetPositionReachedCallbackConfiguration_Response;
+
+typedef struct {
+	TFPMessageHeader header;
+	uint8_t servo_num;
+	int16_t position;
+} __attribute__((__packed__)) PositionReached_Callback;
+
 
 // Function prototypes
 BootloaderHandleMessageResponse get_status(const GetStatus *data, GetStatus_Response *response);
@@ -303,13 +328,16 @@ BootloaderHandleMessageResponse get_input_voltage_configuration(const GetInputVo
 BootloaderHandleMessageResponse get_overall_current(const GetOverallCurrent *data, GetOverallCurrent_Response *response);
 BootloaderHandleMessageResponse get_input_voltage(const GetInputVoltage *data, GetInputVoltage_Response *response);
 BootloaderHandleMessageResponse calibrate_servo_current(const CalibrateServoCurrent *data);
+BootloaderHandleMessageResponse set_position_reached_callback_configuration(const SetPositionReachedCallbackConfiguration *data);
+BootloaderHandleMessageResponse get_position_reached_callback_configuration(const GetPositionReachedCallbackConfiguration *data, GetPositionReachedCallbackConfiguration_Response *response);
 
 // Callbacks
-
+bool handle_position_reached_callback(void);
 
 #define COMMUNICATION_CALLBACK_TICK_WAIT_MS 1
-#define COMMUNICATION_CALLBACK_HANDLER_NUM 0
+#define COMMUNICATION_CALLBACK_HANDLER_NUM 1
 #define COMMUNICATION_CALLBACK_LIST_INIT \
+	handle_position_reached_callback, \
 
 
 #endif

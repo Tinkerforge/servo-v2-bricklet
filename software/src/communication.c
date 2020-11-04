@@ -63,6 +63,8 @@ BootloaderHandleMessageResponse handle_message(const void *message, void *respon
 		case FID_GET_OVERALL_CURRENT: return get_overall_current(message, response);
 		case FID_GET_INPUT_VOLTAGE: return get_input_voltage(message, response);
 		case FID_CALIBRATE_SERVO_CURRENT: return calibrate_servo_current(message);
+		case FID_SET_POSITION_REACHED_CALLBACK_CONFIGURATION: return set_position_reached_callback_configuration(message);
+		case FID_GET_POSITION_REACHED_CALLBACK_CONFIGURATION: return get_position_reached_callback_configuration(message, response);
 		default: return HANDLE_MESSAGE_RESPONSE_NOT_SUPPORTED;
 	}
 }
@@ -377,8 +379,63 @@ BootloaderHandleMessageResponse calibrate_servo_current(const CalibrateServoCurr
 	return HANDLE_MESSAGE_RESPONSE_EMPTY;
 }
 
+BootloaderHandleMessageResponse set_position_reached_callback_configuration(const SetPositionReachedCallbackConfiguration *data) {
+	ServoChannels *sc = get_servo_channels(data->servo_channel);
+	if(sc->length == 0) {
+		return HANDLE_MESSAGE_RESPONSE_INVALID_PARAMETER;
+	}
+
+	for(uint16_t i = 0; i < sc->length; i++) {
+		pwm[sc->servo[i]].position_reached_enabled = data->enabled;
+	}
+
+	return HANDLE_MESSAGE_RESPONSE_EMPTY;
+}
+
+BootloaderHandleMessageResponse get_position_reached_callback_configuration(const GetPositionReachedCallbackConfiguration *data, GetPositionReachedCallbackConfiguration_Response *response) {
+	if(data->servo_channel >= PWM_NUM) {
+		return HANDLE_MESSAGE_RESPONSE_INVALID_PARAMETER;
+	}
+
+	response->header.length = sizeof(GetPositionReachedCallbackConfiguration_Response);
+	response->enabled = pwm[data->servo_channel].position_reached_enabled;
+
+	return HANDLE_MESSAGE_RESPONSE_NEW_MESSAGE;
+}
 
 
+bool handle_position_reached_callback(void) {
+	static bool is_buffered = false;
+	static PositionReached_Callback cb;
+
+	if(!is_buffered) {
+		bool good = false;
+		for(uint8_t i = 0; i < PWM_NUM; i++) {
+			if(pwm[i].position_reached) {
+				tfp_make_default_header(&cb.header, bootloader_get_uid(), sizeof(PositionReached_Callback), FID_CALLBACK_POSITION_REACHED);
+				cb.servo_num            = i;
+				cb.position             = pwm[i].position;
+				pwm[i].position_reached = false;
+				good                    = true;
+				break;
+			}
+		}
+
+		if(!good) {
+			return false;
+		}
+	}
+
+	if(bootloader_spitfp_is_send_possible(&bootloader_status.st)) {
+		bootloader_spitfp_send_ack_and_message(&bootloader_status, (uint8_t*)&cb, sizeof(PositionReached_Callback));
+		is_buffered = false;
+		return true;
+	} else {
+		is_buffered = true;
+	}
+
+	return false;
+}
 
 
 void communication_tick(void) {

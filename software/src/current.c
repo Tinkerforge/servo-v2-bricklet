@@ -254,8 +254,7 @@ void current_init_adc(void) {
 			.alias_channel              =  current[i].channel_alias                // Channel is Aliased
 		};
 
-		XMC_VADC_RESULT_CONFIG_t channel_result_config =
-		{
+		XMC_VADC_RESULT_CONFIG_t channel_result_config = {
 			.data_reduction_control = 0b11,                         // Accumulate 4 result values
 			.post_processing_mode   = XMC_VADC_DMM_REDUCTION_MODE,  // Use reduction mode
 			.wait_for_read_mode  	= 1,                            // Enabled

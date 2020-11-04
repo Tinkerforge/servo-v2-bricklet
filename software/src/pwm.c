@@ -345,7 +345,10 @@ void pwm_tick(void) {
 		if(pwm[i].new_position) {
 			pwm[i].new_position = false;
 
-			pwm[i].current_position = (int16_t)pwm[i].position_calc;
+			const bool reached_before = pwm[i].current_position == pwm[i].position;
+			pwm[i].current_position   = (int16_t)pwm[i].position_calc;
+			const bool reached_after  = pwm[i].current_position == pwm[i].position;
+
 			uint32_t value = SCALE((int64_t)pwm[i].current_position,
 								   (int64_t)pwm[i].degree_min,
 								   (int64_t)pwm[i].degree_max,
@@ -353,6 +356,10 @@ void pwm_tick(void) {
 								   (int64_t)PWM_US_TO_PERIOD(pwm[i].pulse_width_max, pwm[i].prescaler));
 			pwm_set_compare_match(&pwm[i], value);
 			pwm_enable_shadow_transfer(&pwm[i]);
+
+			if(reached_after && !reached_before && pwm[i].position_reached_enabled) {
+				pwm[i].position_reached = true;
+			}
 		}
 
 		// Update enabled
