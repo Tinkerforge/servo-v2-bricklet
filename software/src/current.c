@@ -304,15 +304,8 @@ void current_tick(void) {
 				current[i].result = current[i].result_sum * 550 / (current[i].result_count*273);
 			}
 				
-			uint32_t tmp = current[i].result_sum / current[i].result_count;
-			uint32_t tmp2 = current[i].result_count;
 			current[i].result_sum = 0;
 			current[i].result_count = 0;
-			if(i == 10) {
-				logd("result %d: %dmV (adc: %d, %d)\n\r", i, current[i].result, tmp, tmp2);
-			} else {
-				logd("result %d: %dmA (adc: %d, %d)\n\r", i, current[i].result, tmp, tmp2);
-			}
 
 			last_time_result = system_timer_get_ms();
 		}
