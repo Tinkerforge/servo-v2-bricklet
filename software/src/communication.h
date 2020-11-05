@@ -76,11 +76,12 @@ void communication_init(void);
 #define FID_GET_INPUT_VOLTAGE_CONFIGURATION 20
 #define FID_GET_OVERALL_CURRENT 21
 #define FID_GET_INPUT_VOLTAGE 22
-#define FID_CALIBRATE_SERVO_CURRENT 23
-#define FID_SET_POSITION_REACHED_CALLBACK_CONFIGURATION 24
-#define FID_GET_POSITION_REACHED_CALLBACK_CONFIGURATION 25
+#define FID_SET_CURRENT_CALIBRATION 23
+#define FID_GET_CURRENT_CALIBRATION 24
+#define FID_SET_POSITION_REACHED_CALLBACK_CONFIGURATION 25
+#define FID_GET_POSITION_REACHED_CALLBACK_CONFIGURATION 26
 
-#define FID_CALLBACK_POSITION_REACHED 26
+#define FID_CALLBACK_POSITION_REACHED 27
 
 typedef struct {
 	TFPMessageHeader header;
@@ -279,7 +280,17 @@ typedef struct {
 
 typedef struct {
 	TFPMessageHeader header;
-} __attribute__((__packed__)) CalibrateServoCurrent;
+	int16_t offset[10];
+} __attribute__((__packed__)) SetCurrentCalibration;
+
+typedef struct {
+	TFPMessageHeader header;
+} __attribute__((__packed__)) GetCurrentCalibration;
+
+typedef struct {
+	TFPMessageHeader header;
+	int16_t offset[10];
+} __attribute__((__packed__)) GetCurrentCalibration_Response;
 
 typedef struct {
 	TFPMessageHeader header;
@@ -327,7 +338,8 @@ BootloaderHandleMessageResponse set_input_voltage_configuration(const SetInputVo
 BootloaderHandleMessageResponse get_input_voltage_configuration(const GetInputVoltageConfiguration *data, GetInputVoltageConfiguration_Response *response);
 BootloaderHandleMessageResponse get_overall_current(const GetOverallCurrent *data, GetOverallCurrent_Response *response);
 BootloaderHandleMessageResponse get_input_voltage(const GetInputVoltage *data, GetInputVoltage_Response *response);
-BootloaderHandleMessageResponse calibrate_servo_current(const CalibrateServoCurrent *data);
+BootloaderHandleMessageResponse set_current_calibration(const SetCurrentCalibration *data);
+BootloaderHandleMessageResponse get_current_calibration(const GetCurrentCalibration *data, GetCurrentCalibration_Response *response);
 BootloaderHandleMessageResponse set_position_reached_callback_configuration(const SetPositionReachedCallbackConfiguration *data);
 BootloaderHandleMessageResponse get_position_reached_callback_configuration(const GetPositionReachedCallbackConfiguration *data, GetPositionReachedCallbackConfiguration_Response *response);
 

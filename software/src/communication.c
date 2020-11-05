@@ -62,7 +62,8 @@ BootloaderHandleMessageResponse handle_message(const void *message, void *respon
 		case FID_GET_INPUT_VOLTAGE_CONFIGURATION: return get_input_voltage_configuration(message, response);
 		case FID_GET_OVERALL_CURRENT: return get_overall_current(message, response);
 		case FID_GET_INPUT_VOLTAGE: return get_input_voltage(message, response);
-		case FID_CALIBRATE_SERVO_CURRENT: return calibrate_servo_current(message);
+		case FID_SET_CURRENT_CALIBRATION: return set_current_calibration(message);
+		case FID_GET_CURRENT_CALIBRATION: return get_current_calibration(message, response);
 		case FID_SET_POSITION_REACHED_CALLBACK_CONFIGURATION: return set_position_reached_callback_configuration(message);
 		case FID_GET_POSITION_REACHED_CALLBACK_CONFIGURATION: return get_position_reached_callback_configuration(message, response);
 		default: return HANDLE_MESSAGE_RESPONSE_NOT_SUPPORTED;
@@ -374,9 +375,22 @@ BootloaderHandleMessageResponse get_input_voltage(const GetInputVoltage *data, G
 	return HANDLE_MESSAGE_RESPONSE_NEW_MESSAGE;
 }
 
-BootloaderHandleMessageResponse calibrate_servo_current(const CalibrateServoCurrent *data) {
+BootloaderHandleMessageResponse set_current_calibration(const SetCurrentCalibration *data) {
+	for(uint8_t i = 0; i < PWM_NUM; i++) {
+		current[i].offset = data->offset[i];
+	}
+	current_calibration_write();
 
 	return HANDLE_MESSAGE_RESPONSE_EMPTY;
+}
+
+BootloaderHandleMessageResponse get_current_calibration(const GetCurrentCalibration *data, GetCurrentCalibration_Response *response) {
+	response->header.length = sizeof(GetCurrentCalibration_Response);
+	for(uint8_t i = 0; i < PWM_NUM; i++) {
+		response->offset[i] = current[i].offset;
+	}
+
+	return HANDLE_MESSAGE_RESPONSE_NEW_MESSAGE;
 }
 
 BootloaderHandleMessageResponse set_position_reached_callback_configuration(const SetPositionReachedCallbackConfiguration *data) {

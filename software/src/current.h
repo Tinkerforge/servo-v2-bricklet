@@ -32,6 +32,12 @@
 
 #define CURRENT_NUM 11
 
+#define CURRENT_CALIBRATION_PAGE           1
+#define CURRENT_CALIBRATION_OFFSET_POS     0
+#define CURRENT_CALIBRATION_MAGIC_POS      10
+
+#define CURRENT_CALIBRATION_MAGIC          0x12345678
+
 typedef struct {
     // Pin
     XMC_GPIO_PORT_t *port;
@@ -61,5 +67,7 @@ extern Current current[CURRENT_NUM];
 
 void current_init(void);
 void current_tick(void);
+void current_calibration_write(void);
+void current_calibration_read(void);
 
 #endif

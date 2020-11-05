@@ -23,6 +23,8 @@
 
 #include "bricklib2/hal/system_timer/system_timer.h"
 #include "bricklib2/logging/logging.h"
+#include "bricklib2/bootloader/bootloader.h"
+#include "bricklib2/utility/util_definitions.h"
 
 Current current[CURRENT_NUM] = {
 	{ // Channel 0
@@ -280,6 +282,7 @@ void current_init(void) {
 	for(uint8_t i = 0; i < CURRENT_NUM; i++) {
 		current[i].averaging_duration = 255;
 	}
+	current_calibration_read();
 	current_init_adc();
 }
 
@@ -303,7 +306,8 @@ void current_tick(void) {
 				current[i].result = current[i].result_sum * 605 / (current[i].result_count*273);
 			} else {
 				// mA = adc_value * 3300 / (4095*4) = 550 / 273
-				current[i].result = current[i].result_sum * 550 / (current[i].result_count*273);
+				const int32_t result = current[i].result_sum * 550 / (current[i].result_count*273);
+				current[i].result = MAX(0, result + current[i].offset);
 			}
 				
 			current[i].result_sum = 0;
@@ -311,5 +315,33 @@ void current_tick(void) {
 
 			last_time_result[i] = system_timer_get_ms();
 		}
+	}
+}
+
+void current_calibration_write(void) {
+	uint32_t page[EEPROM_PAGE_SIZE/sizeof(uint32_t)];
+
+	page[CURRENT_CALIBRATION_MAGIC_POS] = CURRENT_CALIBRATION_MAGIC;
+	for(uint8_t i = 0; i < 10; i++) {
+		page[CURRENT_CALIBRATION_OFFSET_POS + i] = current[i].offset + INT16_MAX;
+	}
+
+	bootloader_write_eeprom_page(CURRENT_CALIBRATION_PAGE, page);
+}
+
+void current_calibration_read(void) {
+	uint32_t page[EEPROM_PAGE_SIZE/sizeof(uint32_t)];
+	bootloader_read_eeprom_page(CURRENT_CALIBRATION_PAGE, page);
+
+	// The magic number is not where it is supposed to be.
+	if(page[CURRENT_CALIBRATION_MAGIC_POS] != CURRENT_CALIBRATION_MAGIC) {
+		for(uint8_t i = 0; i < 10; i++) {
+			current[i].offset = 0;
+		}
+		return;
+	}
+
+	for(uint8_t i = 0; i < 10; i++) {
+		current[i].offset = page[CURRENT_CALIBRATION_OFFSET_POS + i] - INT16_MAX;
 	}
 }

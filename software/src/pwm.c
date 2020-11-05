@@ -26,6 +26,8 @@
 
 #include "xmc_scu.h"
 
+#include "current.h"
+
 // us to compare/period value:
 // CP = US*1000*1000*1000*96/(1000*1000*1000*PRESCALER)
 //    = US*96/PRESCALER
