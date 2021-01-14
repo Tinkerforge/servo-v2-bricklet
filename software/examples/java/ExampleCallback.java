@@ -1,5 +1,6 @@
 import com.tinkerforge.IPConnection;
 import com.tinkerforge.BrickletServoV2;
+import com.tinkerforge.TinkerforgeException;
 
 public class ExampleCallback {
 	private static final String HOST = "localhost";
