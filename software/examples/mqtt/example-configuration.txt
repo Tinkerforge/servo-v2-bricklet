@@ -1,0 +1,36 @@
+# Change XYZ to the UID of your Servo Bricklet 2.0
+
+setup:
+	# Servo 1: Connected to port 0, period of 19.5ms, pulse width of 1 to 2ms
+	#          and operating angle -100 to 100°
+	publish '{"servo_channel": 0, "min": -10000, "max": 10000}' to tinkerforge/request/servo_v2_bricklet/XYZ/set_degree
+
+	publish '{"servo_channel": 0, "min": 1000, "max": 2000}' to tinkerforge/request/servo_v2_bricklet/XYZ/set_pulse_width
+
+	publish '{"servo_channel": 0, "period": 19500}' to tinkerforge/request/servo_v2_bricklet/XYZ/set_period
+
+	publish '{"servo_channel": 0, "velocity": 500000, "acceleration": 1000, "deceleration": 1000}' to tinkerforge/request/servo_v2_bricklet/XYZ/set_motion_configuration # Full velocity with slow ac-/deceleration
+
+	# Servo 2: Connected to port 5, period of 20ms, pulse width of 0.95 to 1.95ms
+	#          and operating angle -90 to 90°
+	publish '{"servo_channel": 5, "min": -9000, "max": 9000}' to tinkerforge/request/servo_v2_bricklet/XYZ/set_degree
+
+	publish '{"servo_channel": 5, "min": 950, "max": 1950}' to tinkerforge/request/servo_v2_bricklet/XYZ/set_pulse_width
+
+	publish '{"servo_channel": 5, "period": 20000}' to tinkerforge/request/servo_v2_bricklet/XYZ/set_period
+
+	publish '{"servo_channel": 5, "velocity": 500000, "acceleration": 500000, "deceleration": 500000}' to tinkerforge/request/servo_v2_bricklet/XYZ/set_motion_configuration # Full velocity with full ac-/deceleration
+
+	publish '{"servo_channel": 0, "position": 10000}' to tinkerforge/request/servo_v2_bricklet/XYZ/set_position # Set to most right position
+
+	publish '{"servo_channel": 0, "enable": true}' to tinkerforge/request/servo_v2_bricklet/XYZ/set_enable
+
+	publish '{"servo_channel": 5, "position": -9000}' to tinkerforge/request/servo_v2_bricklet/XYZ/set_position # Set to most left position
+
+	publish '{"servo_channel": 5, "enable": true}' to tinkerforge/request/servo_v2_bricklet/XYZ/set_enable
+
+cleanup:
+	# If you are done, run this to clean up
+	publish '{"servo_channel": 0, "enable": false}' to tinkerforge/request/servo_v2_bricklet/XYZ/set_enable
+
+	publish '{"servo_channel": 5, "enable": false}' to tinkerforge/request/servo_v2_bricklet/XYZ/set_enable

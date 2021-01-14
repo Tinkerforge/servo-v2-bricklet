@@ -1,0 +1,57 @@
+Notebook[{
+ Cell[
+  BoxData[{
+   RowBox[{"Needs", "[", "\"\<NETLink`\>\"", "]"}],
+   RowBox[{"LoadNETAssembly", "[", RowBox[{"\"\<Tinkerforge\>\"", ",", RowBox[{RowBox[{"NotebookDirectory", "[", "]"}], "<>", "\"\<../../..\>\""}]}], "]"}]
+  }], "Input"
+ ],
+ Cell[
+  BoxData[{
+   RowBox[{"host", "=", "\"\<localhost\>\""}],
+   RowBox[{"port", "=", "4223"}],
+   RowBox[{"uid", "=", "\"\<XYZ\>\"", RowBox[{"(*", "Change XYZ to the UID of your Servo Bricklet 2.0", "*)"}]}],
+   RowBox[{"
+"}],
+   RowBox[{"(*", "Create IPConnection and device object", "*)"}],
+   RowBox[{"ipcon", "=", RowBox[{"NETNew", "[", "\"\<Tinkerforge.IPConnection\>\"", "]"}]}],
+   RowBox[{"s", "=", RowBox[{"NETNew", "[", RowBox[{"\"\<Tinkerforge.BrickletServoV2\>\"", ",", "uid", ",", "ipcon"}], "]"}]}],
+   RowBox[{"ipcon", "@", RowBox[{"Connect", "[", RowBox[{"host", ",", "port"}], "]"}]}],
+   RowBox[{"
+"}],
+   RowBox[{"(*", "Servo 1: Connected to port 0, period of 19.5ms, pulse width of 1 to 2ms", "*)"}],
+   RowBox[{"(*", "         and operating angle -100 to 100\.b0", "*)"}],
+   RowBox[{"s", "@", RowBox[{"SetDegree", "[", RowBox[{"0", ",", RowBox[{"-", "10000"}], ",", "10000"}], "]"}]}],
+   RowBox[{"s", "@", RowBox[{"SetPulseWidth", "[", RowBox[{"0", ",", "1000", ",", "2000"}], "]"}]}],
+   RowBox[{"s", "@", RowBox[{"SetPeriod", "[", RowBox[{"0", ",", "19500"}], "]"}]}],
+   RowBox[{"s", "@", RowBox[{"SetMotionConfiguration", "[", RowBox[{"0", ",", "500000", ",", "1000", ",", "1000"}], "]"}], RowBox[{"(*", "Full velocity with slow ac-/deceleration", "*)"}]}],
+   RowBox[{"
+"}],
+   RowBox[{"(*", "Servo 2: Connected to port 5, period of 20ms, pulse width of 0.95 to 1.95ms", "*)"}],
+   RowBox[{"(*", "         and operating angle -90 to 90\.b0", "*)"}],
+   RowBox[{"s", "@", RowBox[{"SetDegree", "[", RowBox[{"5", ",", RowBox[{"-", "9000"}], ",", "9000"}], "]"}]}],
+   RowBox[{"s", "@", RowBox[{"SetPulseWidth", "[", RowBox[{"5", ",", "950", ",", "1950"}], "]"}]}],
+   RowBox[{"s", "@", RowBox[{"SetPeriod", "[", RowBox[{"5", ",", "20000"}], "]"}]}],
+   RowBox[{"s", "@", RowBox[{"SetMotionConfiguration", "[", RowBox[{"5", ",", "500000", ",", "500000", ",", RowBox[{"\[IndentingNewLine]", "500000"}]}], "]"}], RowBox[{"(*", "Full velocity with full ac-/deceleration", "*)"}]}],
+   RowBox[{"
+"}],
+   RowBox[{"s", "@", RowBox[{"SetPosition", "[", RowBox[{"0", ",", "10000"}], "]"}], RowBox[{"(*", "Set to most right position", "*)"}]}],
+   RowBox[{"s", "@", RowBox[{"SetEnable", "[", RowBox[{"0", ",", "True"}], "]"}]}],
+   RowBox[{"
+"}],
+   RowBox[{"s", "@", RowBox[{"SetPosition", "[", RowBox[{"5", ",", RowBox[{"-", "9000"}]}], "]"}], RowBox[{"(*", "Set to most left position", "*)"}]}],
+   RowBox[{"s", "@", RowBox[{"SetEnable", "[", RowBox[{"5", ",", "True"}], "]"}]}],
+   RowBox[{"
+"}],
+   RowBox[{"Input", "[", "\"\<Click OK to exit\>\"", "]"}],
+   RowBox[{"
+"}],
+   RowBox[{"s", "@", RowBox[{"SetEnable", "[", RowBox[{"0", ",", "False"}], "]"}]}],
+   RowBox[{"s", "@", RowBox[{"SetEnable", "[", RowBox[{"5", ",", "False"}], "]"}]}],
+   RowBox[{"
+"}],
+   RowBox[{"ipcon", "@", RowBox[{"Disconnect", "[", "]"}]}],
+   RowBox[{"ReleaseNETObject", "[", "s", "]"}],
+   RowBox[{"ReleaseNETObject", "[", "ipcon", "]"}]
+  }], "Input"
+ ]
+}]

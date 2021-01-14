@@ -1,0 +1,36 @@
+# Change XYZ to the UID of your Servo Bricklet 2.0
+
+setup:
+	# Use position reached callback to swing back and forth
+	subscribe to tinkerforge/callback/servo_v2_bricklet/XYZ/position_reached
+		if a message arives
+			# message contains the current servo_channel and position as int
+			if position is 9000
+				# Position is 90°, going to -90°
+				publish '{"servo_channel": 0, "position": -9000}' to tinkerforge/request/servo_v2_bricklet/XYZ/set_position
+			elseif position is -9000
+				# Position is -90°, going to 90°
+				publish '{"servo_channel": 0, "position": 9000}' to tinkerforge/request/servo_v2_bricklet/XYZ/set_position
+			else
+				# Another program has set the position, print an error
+			endif
+		endif
+	endsubscribe
+
+	publish '{"register": true}' to tinkerforge/register/servo_v2_bricklet/XYZ/position_reached # Register position_reached callback
+
+	# Enable position reached callback
+	publish '{"servo_channel": 0, "enabled": true}' to tinkerforge/request/servo_v2_bricklet/XYZ/set_position_reached_callback_configuration
+
+	# Set velocity to 100°/s. This has to be smaller or equal to the
+	# maximum velocity of the servo you are using, otherwise the position
+	# reached callback will be called too early
+	publish '{"servo_channel": 0, "velocity": 10000, "acceleration": 500000, "deceleration": 500000}' to tinkerforge/request/servo_v2_bricklet/XYZ/set_motion_configuration
+
+	publish '{"servo_channel": 0, "position": 9000}' to tinkerforge/request/servo_v2_bricklet/XYZ/set_position
+
+	publish '{"servo_channel": 0, "enable": true}' to tinkerforge/request/servo_v2_bricklet/XYZ/set_enable
+
+cleanup:
+	# If you are done, run this to clean up
+	publish '{"servo_channel": 0, "enable": false}' to tinkerforge/request/servo_v2_bricklet/XYZ/set_enable
