@@ -427,7 +427,7 @@ bool handle_position_reached_callback(void) {
 		for(uint8_t i = 0; i < PWM_NUM; i++) {
 			if(pwm[i].position_reached) {
 				tfp_make_default_header(&cb.header, bootloader_get_uid(), sizeof(PositionReached_Callback), FID_CALLBACK_POSITION_REACHED);
-				cb.servo_num            = i;
+				cb.servo_channel        = i;
 				cb.position             = pwm[i].position;
 				pwm[i].position_reached = false;
 				good                    = true;

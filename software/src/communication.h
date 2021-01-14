@@ -310,7 +310,7 @@ typedef struct {
 
 typedef struct {
 	TFPMessageHeader header;
-	uint8_t servo_num;
+	uint16_t servo_channel;
 	int16_t position;
 } __attribute__((__packed__)) PositionReached_Callback;
 
