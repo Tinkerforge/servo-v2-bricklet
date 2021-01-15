@@ -23,10 +23,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         for position_reached in position_reached_receiver {
             if position_reached.position == 9000 {
                 println!("Position: 90°, going to -90°");
-                s_copy.set_position(position_reached.servo_channel, -9000).recv()?;
+                s_copy.set_position(position_reached.servo_channel, -9000);
             } else if position_reached.position == -9000 {
                 println!("Position: -90°, going to 90°");
-                s_copy.set_position(position_reached.servo_channel, 9000).recv()?;
+                s_copy.set_position(position_reached.servo_channel, 9000);
             } else {
                 // Can only happen if another program sets position
                 println!("Error");
