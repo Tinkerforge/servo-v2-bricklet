@@ -302,8 +302,9 @@ void current_tick(void) {
 		if(system_timer_is_time_elapsed_ms(last_time_result[i], current[i].averaging_duration)) {
 			if(i == 10) {
 				// Resistor divider 1k:10k
-				// mV = adc_value * 3300*11 / (4095*4) = 605 / 273
-				current[i].result = current[i].result_sum * 605 / (current[i].result_count*273);
+				// Calibration: * 5000 / 5400 (TODO: Where does this error come from?)
+				// mV = adc_value * 3300*11*5000 / (4095*4*5400) = 15125 / 7371
+				current[i].result = current[i].result_sum * 15125 / (current[i].result_count*7371);
 			} else {
 				// mA = adc_value * 3300 / (4095*4) = 550 / 273
 				const int32_t result = current[i].result_sum * 550 / (current[i].result_count*273);
