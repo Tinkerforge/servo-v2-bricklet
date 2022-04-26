@@ -1,35 +1,35 @@
 // This example is not self-contained.
-// It requres usage of the example driver specific to your platform.
+// It requires usage of the example driver specific to your platform.
 // See the HAL documentation.
 
-#include "bindings/hal_common.h"
-#include "bindings/bricklet_servo_v2.h"
+#include "src/bindings/hal_common.h"
+#include "src/bindings/bricklet_servo_v2.h"
 
-// FIXME: This example is incomplete
-
-#define UID "XYZ" // Change XYZ to the UID of your Servo Bricklet 2.0
-
-void check(int rc, const char* msg);
-
+void check(int rc, const char *msg);
 void example_setup(TF_HAL *hal);
 void example_loop(TF_HAL *hal);
-
 
 // Use position reached callback to swing back and forth
 static void position_reached_handler(TF_ServoV2 *device, uint16_t servo_channel,
                                      int16_t position, void *user_data) {
 	(void)device; (void)user_data; // avoid unused parameter warning
 
-	tf_hal_printf("Servo Channel: %I16u\n", servo_channel);
-	tf_hal_printf("Position: %I16d\n", position);
-	tf_hal_printf("\n");
+	if (position == 9000) {
+		tf_hal_printf("Position: 90°, going to -90°\n");
+		tf_servo_v2_set_position(device, servo_channel, -9000);
+	} else if (position == -9000) {
+		tf_hal_printf("Position: -90°, going to 90°\n");
+		tf_servo_v2_set_position(device, servo_channel, 9000);
+	} else {
+		tf_hal_printf("Error\n"); // Can only happen if another program sets position
+	}
 }
 
 static TF_ServoV2 s;
 
 void example_setup(TF_HAL *hal) {
 	// Create device object
-	check(tf_servo_v2_create(&s, UID, hal), "create device object");
+	check(tf_servo_v2_create(&s, NULL, hal), "create device object");
 
 	// Register position reached callback to function position_reached_handler
 	tf_servo_v2_register_position_reached_callback(&s,

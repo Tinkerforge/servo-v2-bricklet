@@ -1,23 +1,19 @@
 // This example is not self-contained.
-// It requres usage of the example driver specific to your platform.
+// It requires usage of the example driver specific to your platform.
 // See the HAL documentation.
 
-#include "bindings/hal_common.h"
-#include "bindings/bricklet_servo_v2.h"
+#include "src/bindings/hal_common.h"
+#include "src/bindings/bricklet_servo_v2.h"
 
-#define UID "XYZ" // Change XYZ to the UID of your Servo Bricklet 2.0
-
-void check(int rc, const char* msg);
-
+void check(int rc, const char *msg);
 void example_setup(TF_HAL *hal);
 void example_loop(TF_HAL *hal);
-
 
 static TF_ServoV2 s;
 
 void example_setup(TF_HAL *hal) {
 	// Create device object
-	check(tf_servo_v2_create(&s, UID, hal), "create device object");
+	check(tf_servo_v2_create(&s, NULL, hal), "create device object");
 
 	// Servo 1: Connected to port 0, period of 19.5ms, pulse width of 1 to 2ms
 	//          and operating angle -100 to 100°
