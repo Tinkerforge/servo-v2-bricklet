@@ -6,11 +6,11 @@
 
   (title_block
     (title "Servo Bricklet")
-    (date "2019-06-17")
-    (rev "1.0")
+    (date "2023-01-25")
+    (rev "2.0")
     (company "Tinkerforge GmbH")
     (comment 1 "Licensed under CERN OHL v.1.1")
-    (comment 2 "Copyright (©) 2019, T.Schneidermann <tim@tinkerforge.com>")
+    (comment 2 "Copyright (©) 2023, T.Schneidermann <tim@tinkerforge.com>")
   )
 
   (lib_symbols
@@ -2431,7 +2431,7 @@
     (effects (font (size 0.9906 0.9906)) (justify left bottom))
     (uuid 40c531be-b93b-4c75-bd97-9076e4111ac1)
   )
-  (text "Copyright Tinkerforge GmbH 2017.\nThis documentation describes Open Hardware and is licensed under the\nCERN OHL v. 1.1.\nYou may redistribute and modify this documentation under the terms of the\nCERN OHL v.1.1. (http://ohwr.org/cernohl). This documentation is distributed\nWITHOUT ANY EXPRESS OR IMPLIED WARRANTY, INCLUDING OF\nMERCHANTABILITY, SATISFACTORY QUALITY AND FITNESS FOR A\nPARTICULAR PURPOSE. Please see the CERN OHL v.1.1 for applicable\nconditions\n"
+  (text "Copyright Tinkerforge GmbH 2023.\nThis documentation describes Open Hardware and is licensed under the\nCERN OHL v. 1.1.\nYou may redistribute and modify this documentation under the terms of the\nCERN OHL v.1.1. (http://ohwr.org/cernohl). This documentation is distributed\nWITHOUT ANY EXPRESS OR IMPLIED WARRANTY, INCLUDING OF\nMERCHANTABILITY, SATISFACTORY QUALITY AND FITNESS FOR A\nPARTICULAR PURPOSE. Please see the CERN OHL v.1.1 for applicable\nconditions\n"
     (at 13.97 195.58 0)
     (effects (font (size 1.016 1.016)) (justify left bottom))
     (uuid 42affbcc-9943-41b0-aad7-623c3913e178)
